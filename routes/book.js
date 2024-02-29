@@ -1,47 +1,21 @@
 const express = require('express');
 const Book = require('../models/book');
 const router = express.Router();
-// const bookCtrl = require('../controllers/book');
+const bookCtrl = require('../controllers/book');
 
-router.get('/', (req, res, next) => {
-  Book.find()
-    .then((books) => {
-      res.status(200).json(books);
-    })
-    .catch((error) => res.status(400).json({ error }));
-});
+// router.get('/', (req, res, next) => {
+//   Book.find()
+//     .then((books) => {
+//       res.status(200).json(books);
+//     })
+//     .catch((error) => res.status(400).json({ error }));
+// });
 
-router.post('/', (req, res, next) => {
-  delete req.body._id;
-  delete req.body._userId;
-  const book = new Book({
-    ...req.body,
-  });
-  book
-    .save()
-    .then(() => res.status(201).json({ message: 'Saved!' }))
-    .catch((error) => {
-      res.status(400).json({ error });
-    });
-});
+router.get('/', bookCtrl.getAllBooks);
+router.post('/', bookCtrl.createBook);
+router.get('/bestrating', bookCtrl.getBestRating);
 
-router.get('/bestrating', (req, res, next) => {
-  Book.find()
-    .then((books) => {
-      books.sort((a, b) => b.averageRating - a.averageRating);
-      const topThreeBooks = books.slice(0, 3);
-      res.status(200).json(topThreeBooks);
-    })
-    .catch((error) => res.status(400).json({ error }));
-});
-
-router.get('/:id', (req, res, next) => {
-  Book.findOne({ _id: req.params.id })
-    .then((book) => {
-      res.status(200).json(book);
-    })
-    .catch((error) => res.status(404).json({ error }));
-});
+router.get('/:id', bookCtrl.getOneBook);
 
 router.delete('/:id', (req, res, next) => {
   Thing.deleteOne({ _id: req.params.id })
