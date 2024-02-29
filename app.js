@@ -27,9 +27,19 @@ app.use((req, res, next) => {
 });
 
 app.post('/api/books', (req, res, next) => {
-  const datas = req.body;
-  console.log(req.body);
-  res.status(201).json({ ...datas });
+  // const datas = req.body;
+  // console.log(req.body);
+  // res.status(201).json({ ...datas });
+  delete req.body._id;
+  const book = new Book({
+    ...req.body,
+  });
+  book
+    .save()
+    .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
+    .catch((error) => {
+      res.status(400).json({ error });
+    });
 });
 
 app.get('/api/books', (req, res, next) => {
