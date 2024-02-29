@@ -27,10 +27,8 @@ app.use((req, res, next) => {
 });
 
 app.post('/api/books', (req, res, next) => {
-  // const datas = req.body;
-  // console.log(req.body);
-  // res.status(201).json({ ...datas });
   delete req.body._id;
+  delete req.body._userId;
   const book = new Book({
     ...req.body,
   });
@@ -43,33 +41,29 @@ app.post('/api/books', (req, res, next) => {
 });
 
 app.get('/api/books', (req, res, next) => {
-  const books = [
-    {
-      id: 'oeihfzeoi',
-      title: 'livre 1',
-      author: 'Gaëtan TREMOIS',
-      imageUrl: '',
-      year: 2024,
-      genre: 'Polar',
-      ratings: [],
-      averageRating: 3,
-    },
-    {
-      id: 'oeihfzeol',
-      title: 'livre 2',
-      author: 'Gaëtan TREMOIS',
-      imageUrl: '',
-      year: 2001,
-      genre: 'Fiction',
-      ratings: [],
-      averageRating: 2,
-    },
-  ];
-  res.status(200).json(books);
+  Book.find()
+    .then((books) => {
+      res.status(200).json(books);
+    })
+    .catch((error) => res.status(400).json({ error }));
 });
 
-app.get('/test', (req, res, next) => {
-  res.status(200).json({ message: 'Ok page test !' });
+app.get('/api/books/bestrating', (req, res, next) => {
+  Book.find()
+    .then((books) => {
+      books.sort((a, b) => b.averageRating - a.averageRating);
+      const topThreeBooks = books.slice(0, 3);
+      res.status(200).json(topThreeBooks);
+    })
+    .catch((error) => res.status(400).json({ error }));
+});
+
+app.get('/api/books/:id', (req, res, next) => {
+  Book.findOne({ _id: req.params.id })
+    .then((book) => {
+      res.status(200).json(book);
+    })
+    .catch((error) => res.status(404).json({ error }));
 });
 
 module.exports = app;
