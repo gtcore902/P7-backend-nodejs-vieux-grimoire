@@ -49,7 +49,7 @@ exports.modifyBook = (req, res, next) => {
   const bookObject = req.file
     ? {
         ...JSON.parse(req.body.book),
-        imagesUrl: `${req.protocol}://${req.get('host')}/images/${
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${
           req.file.filename
         }`,
       }
