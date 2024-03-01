@@ -1,18 +1,12 @@
 const express = require('express');
-const Book = require('../models/book');
+// const Book = require('../models/book');
 const router = express.Router();
+const auth = require('../middlewares/auth');
+const multer = require('../middlewares/multer-config');
 const bookCtrl = require('../controllers/book');
 
-// router.get('/', (req, res, next) => {
-//   Book.find()
-//     .then((books) => {
-//       res.status(200).json(books);
-//     })
-//     .catch((error) => res.status(400).json({ error }));
-// });
-
-router.get('/', bookCtrl.getAllBooks);
-router.post('/', bookCtrl.createBook);
+router.get('/', bookCtrl.getAllBooks); // auth à supprimer après
+router.post('/', multer, bookCtrl.createBook);
 router.get('/bestrating', bookCtrl.getBestRating);
 
 router.get('/:id', bookCtrl.getOneBook);
