@@ -1,27 +1,5 @@
-// const multer = require('multer');
-// const sharp = require('sharp');
-
-// const MIME_TYPES = {
-//   'image/jpg': 'jpg',
-//   'image/jpeg': 'jpeg',
-//   'image/png': 'png',
-// };
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, callback) => {
-//     callback(null, 'images');
-//   },
-//   filename: (req, file, callback) => {
-//     const name = file.originalname.split(' ').join('_');
-//     const extension = MIME_TYPES[file.mimetype];
-//     callback(null, name + Date.now() + '.' + extension);
-//   },
-// });
-
-// module.exports = multer({ storage: storage }).single('image');
-
 const multer = require('multer');
-const sharp = require('sharp'); // Importez sharp
+const sharp = require('sharp');
 const fs = require('fs');
 
 const MIME_TYPES = {
@@ -41,7 +19,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// Utilisez multer pour télécharger l'image
+// Use multer to downloasd image
 const upload = multer({ storage: storage }).single('image');
 
 const deleteImg = (filePath) => {
@@ -49,25 +27,25 @@ const deleteImg = (filePath) => {
     if (error) {
       console.error(error);
     } else {
-      console.log('ok');
+      console.log('File deleted successfully!');
     }
   });
 };
-// Middleware pour traiter l'image après téléchargement
+// Add middleware for traitment after download
 const processImage = (req, res, next) => {
   if (!req.file) {
     return next();
   }
 
-  // Utilisez sharp pour redimensionner l'image
+  // Resize and compress image
   sharp(req.file.path)
-    .resize(500) // Redimensionnez l'image selon vos besoins
+    .resize(500)
+    .jpeg({ quality: 80 })
     .toFile('images/resized/' + req.file.filename, (err, info) => {
       if (err) {
         return next(err);
       }
-      // Stockez l'emplacement de l'image redimensionnée dans req
-      req.resizedImagePath = 'images/resized/' + req.file.filename;
+      // Remove initial image
       deleteImg(req.file.path);
       next();
     });
