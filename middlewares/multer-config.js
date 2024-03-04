@@ -36,7 +36,7 @@ const processImage = (req, res, next) => {
   if (!req.file) {
     return next();
   }
-
+  sharp.cache(false);
   // Resize and compress image
   sharp(req.file.path)
     .resize(500)
