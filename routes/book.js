@@ -11,6 +11,7 @@ router.get('/bestrating', bookCtrl.getBestRating);
 router.get('/:id', bookCtrl.getOneBook);
 router.put('/:id', auth, multer, bookCtrl.modifyBook);
 router.delete('/:id', auth, multer, bookCtrl.deleteBook);
+router.post('/:id/rating', auth, bookCtrl.addRating); // add auth
 
 router.delete('/:id', (req, res, next) => {
   Book.deleteOne({ _id: req.params.id })
