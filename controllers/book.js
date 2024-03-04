@@ -8,7 +8,7 @@ exports.createBook = (req, res, next) => {
   const book = new Book({
     ...bookThing,
     userId: req.auth.userId,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${
+    imageUrl: `${req.protocol}://${req.get('host')}/images/resized/${
       req.file.filename
     }`,
   });
@@ -47,10 +47,11 @@ exports.getOneBook = (req, res, next) => {
 };
 
 exports.modifyBook = (req, res, next) => {
+  // delete old file if req.file here
   const bookObject = req.file
     ? {
         ...JSON.parse(req.body.book),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${
+        imageUrl: `${req.protocol}://${req.get('host')}/images/resized/${
           req.file.filename
         }`,
       }
