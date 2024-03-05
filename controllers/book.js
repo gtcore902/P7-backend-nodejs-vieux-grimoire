@@ -47,7 +47,6 @@ exports.getOneBook = (req, res, next) => {
 };
 
 exports.modifyBook = (req, res, next) => {
-  // delete old file if req.file here
   const bookObject = req.file
     ? {
         ...JSON.parse(req.body.book),
@@ -132,51 +131,10 @@ exports.addRating = (req, res, next) => {
         book.ratings.reduce((acc, rating) => acc + rating.grade, 0) /
         book.ratings.length
       ).toFixed(1);
-      book.averageRating = parseFloat(averageRating);
+
+      book.averageRating = Math.round(Number(averageRating));
       return book.save();
     })
     .then((book) => res.status(200).json(book))
     .catch((error) => res.status(500).json({ erreur: error }));
 };
-
-// exports.addRating = (req, res, next) => {
-//   const userId = req.auth.userId;
-//   const userGrade = req.body.rating;
-//   console.log(typeof userGrade);
-
-//   if (userGrade < 0 || userGrade > 5) {
-//     return res.status(401).json({ message: 'Invalid rating' });
-//   }
-
-//   Book.findOne({ _id: req.params.id }).then((book) => {
-//     const userRating = book.ratings.find(
-//       (element) => element.userId === userId
-//     );
-//     if (userRating) {
-//       return res.status(400).json({ message: 'You already added ratings' });
-//     }
-
-//     // let allgrades = [];
-//     // book.ratings.map((element) => allgrades.push(element.grade));
-//     // allgrades.push(userGrade);
-//     const averageRating = (
-//       book.ratings.reduce((acc, rating) => acc + rating.grade, 0) /
-//       book.ratings.length
-//     ).toFixed(1);
-//     console.log(userGrade);
-//     book.ratings.push({ userId, userGrade });
-//     console.log(
-//       book.ratings,
-//       userId,
-//       typeof userGrade,
-//       typeof Number(averageRating)
-//     );
-
-//     book.averageRating = Number(averageRating);
-//     // console.log(book);
-//     book
-//       .save()
-//       .then(() => res.status(200).json(book))
-//       .catch((error) => res.status(400).json({ error }));
-//   });
-// };
