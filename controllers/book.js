@@ -113,25 +113,34 @@ exports.deleteBook = (req, res, next) => {
 
 exports.addRating = (req, res, next) => {
   const userId = req.auth.userId;
-  const grade = req.body.rating;
+  const userGrade = req.body.rating;
 
-  if (!grade || grade < 0 || grade > 5) {
+  const ratingDatas = {
+    userId: userId,
+    grade: userGrade,
+  };
+
+  // Check the entered grade
+  if (isNaN(userGrade) || userGrade < 0 || userGrade > 5) {
     return res.status(400).json({ message: 'Invalid rating' });
   }
   Book.findOne({ _id: req.params.id })
     .then((book) => {
+      // Check if user already added a rate
       const userRating = book.ratings.find(
-        (rating) => rating.userId === userId
+        (element) => element.userId === userId
       );
       if (userRating) {
         return res.status(400).json({ message: 'You already added ratings' });
       }
-      book.ratings.push({ userId, grade });
+      // Add rating datas
+      book.ratings.push(ratingDatas);
       const averageRating = (
-        book.ratings.reduce((acc, rating) => acc + rating.grade, 0) /
+        book.ratings.reduce((acc, element) => acc + element.grade, 0) /
         book.ratings.length
       ).toFixed(1);
 
+      // Adjust average rating
       book.averageRating = Math.round(Number(averageRating));
       return book.save();
     })
