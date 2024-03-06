@@ -30,6 +30,13 @@ app.use((req, res, next) => {
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+// app.get('/api/books/fake', (req, res, next) => {
+//   res.status(200).json({
+//     userId: req.headers.userId,
+//     token: req.headers.token,
+//   });
+// });
+
 app.use('/api/auth', userRoutes);
 app.use('/api/books', bookRoutes);
 

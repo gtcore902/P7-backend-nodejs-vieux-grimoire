@@ -101,7 +101,7 @@ exports.deleteBook = (req, res, next) => {
               res.status(200).json({ message: 'Deleted!' });
             })
             .catch((error) => {
-              res.status(401).json({ error });
+              res.status(401).json({ error }); // error code 500 ?
             });
         });
       }
@@ -131,13 +131,16 @@ exports.addRating = (req, res, next) => {
         (element) => element.userId === userId
       );
       if (userRating) {
-        return res.status(400).json({ message: 'You already added ratings' });
+        return res.status(400).json({ message: 'You already added ratings' }); // error code 409 ?
       }
       // Add rating datas
       book.ratings.push(ratingDatas);
+      const initialValue = 0;
       const averageRating = (
-        book.ratings.reduce((acc, element) => acc + element.grade, 0) /
-        book.ratings.length
+        book.ratings.reduce(
+          (acc, element) => acc + element.grade,
+          initialValue
+        ) / book.ratings.length
       ).toFixed(1);
 
       // Adjust average rating
