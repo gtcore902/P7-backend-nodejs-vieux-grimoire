@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// Use multer to downloasd image
+// Use multer to download image
 const upload = multer({ storage: storage }).single('image');
 
 const deleteImg = (filePath) => {
