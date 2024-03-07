@@ -95,13 +95,17 @@ exports.deleteBook = (req, res, next) => {
         res.status(403).json({ message: 'unauthorized request' });
       } else {
         const filename = book.imageUrl.split('/images/')[1];
-        fs.unlink(`images/${filename}`, () => {
+        fs.unlink(`images/${filename}`, (error) => {
+          if (error) {
+            console.error('Error deleting file: ', error);
+            // Even if an error occurs while deleting the file, we still want to try deleting the book
+          }
           Book.deleteOne({ _id: req.params.id })
             .then(() => {
               res.status(200).json({ message: 'Deleted!' });
             })
             .catch((error) => {
-              res.status(401).json({ error }); // error code 500 ?
+              res.status(500).json({ error });
             });
         });
       }
@@ -131,10 +135,11 @@ exports.addRating = (req, res, next) => {
         (element) => element.userId === userId
       );
       if (userRating) {
-        return res.status(400).json({ message: 'You already added ratings' }); // error code 409 ?
+        return res.status(400).json({ message: 'You already added ratings' });
       }
       // Add rating datas
       book.ratings.push(ratingDatas);
+      // Recalculate the average
       const initialValue = 0;
       const averageRating = (
         book.ratings.reduce(
