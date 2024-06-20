@@ -12,6 +12,8 @@ The goal is to create the backend part of a book consultation website :books:.
 
 - [Node.js](https://nodejs.org/en/)
 - [Express](https://expressjs.com/)
+- [JsonWebTokens](https://jwt.io/)
+- [Bcrypt](https://www.bcrypt.fr/)
 
 ## :smiley:Functional Specifications
 
